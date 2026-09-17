@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>best</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/main.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"></script>
+</head>
+<body>
+    <!--导航-->
+    <nav class="navbar bg-dark navbar-dark " >
+        <a class="navbar-brand" href="#">
+            <img th:src="@{/img/logo.png}" height="50">
+        </a>
+        <div class="d-flex me-auto">
+            <ul class="navbar-nav flex-row gap-2 ">
+                <li class="nav-item"><a class="nav-link active" th:href="@{/}">首页</a></li>
+                <li class="nav-item"><a class="nav-link " th:href="@{/tv}">电视剧</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/anime}">动漫</a></li>
+                <li class="nav-item"><a class="nav-link" th:href="@{/film}">电影</a></li>
+                <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin}">影视管理</a></li>
+            </ul>
+        </div>
+            <form class="d-inline-flex ms-auto" th:action="@{/search}" method="get">
+                <input class="form-control me-3" type="text" name="keyword" style="height: 35px;width: 200px" placeholder="Search..."/>
+                <button class="btn btn-outline-secondary me-2" style="height: 35px;width: 60px">搜索</button>
+            </form>
+        <!-- 未登录：显示登录按钮 -->
+        <div sec:authorize="!isAuthenticated()">
+            <a th:href="@{/login}" class="btn btn-light me-4">登录</a>
+        </div>
+
+        <!-- 已登录：昵称+下拉退出菜单 -->
+        <div class="dropdown me-1" sec:authorize="isAuthenticated()">
+            <button class="btn dropdown-toggle d-flex align-items-center gap-1 w-auto"
+                    style="justify-content:flex-start;"
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <span style="width:40px;height:40px;border-radius:50%;background:#448aff;color:white;display:flex;align-items:center;justify-content:center;"></span>
+                <span style="color: white" th:text="${session.loginUser?.nickname}"></span>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end" style="width:90px;">
+                <li>
+                    <form th:action="@{/logout}" method="post">
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                        <button class="dropdown-item text-danger text-center" type="submit">退出登录</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container" >
+        <div id="carousel" class="carousel slide mt-3" data-bs-ride="carousel">
+
+            <div class="carousel-indicators">
+                <button th:each="ban,index:${bannerList}" type="button" data-bs-target="#carousel" th:data-bs-slide-to="${index.index}" th:classappend="${index.index==0?'active':''}"></button>
+            </div>
+
+            <!-- 轮播图片 -->
+            <div class="carousel-inner" style="height: 550px;">
+                <div class="carousel-item " th:each="ban,index:${bannerList}" th:classappend="${index.index==0?'active':''}" >
+                    <img th:src="${ban.img_path}" class="d-block w-100" style="height: 100%; object-fit: cover;" >
+                </div>
+
+            </div>
+
+            <!-- 左右控制按钮 -->
+            <button class="carousel-control-prev" type="button" data-bs-target="#carousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+        <div id="juji1" class="mt-5">
+            <p class="h3">剧集</p>
+        <div class="row g-4 ">
+            <div class="col-2" th:each="video:${videoList}">
+                <div class="card  mt-3 mb-3 d-flex flex-column" >
+                    <img th:src="${video.cover_img}" style="height: 220px; object-fit: cover;"/>
+                    <div class="card-body ">
+                        <h6 th:text="${video.title}"></h6>
+                        <p th:text="'共'+ ${video.episodes} + '集'"></p>
+                    </div>
+                    <div class="p-2 d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/bofang(id=${video.id})}'|">开始播放</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div id="juji2" class="mt-5">
+            <p class="h3">电影</p>
+            <div class="row g-4 ">
+                <div class="col-2" th:each="video:${showFilm}">
+                    <div class="card  mt-3 mb-3 d-flex flex-column" >
+                        <img th:src="${video.cover_img}" style="height: 220px; object-fit: cover;"/>
+                        <div class="card-body ">
+                            <h6 th:text="${video.title}"></h6>
+                            <p th:text="'共'+ ${video.episodes} + '集'"></p>
+                        </div>
+                        <div class="p-2 d-flex justify-content-end">
+                            <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/bofang(id=${video.id})}'|">开始播放</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="juji3" class="mt-5">
+            <p class="h3">动漫</p>
+            <div class="row g-4 ">
+                <div class="col-2" th:each="video:${showAnime}">
+                    <div class="card  mt-3 mb-3 d-flex flex-column" >
+                        <img th:src="${video.cover_img}" style="height: 220px; object-fit: cover;"/>
+                        <div class="card-body ">
+                            <h6 th:text="${video.title}"></h6>
+                            <p th:text="'共'+ ${video.episodes} + '集'"></p>
+                        </div>
+                        <div class="p-2 d-flex justify-content-end">
+                            <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/bofang(id=${video.id})}'|">开始播放</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

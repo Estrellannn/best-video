@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="zh" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>搜索结果</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<!--导航-->
+<nav class="navbar bg-dark navbar-dark " >
+    <a class="navbar-brand" href="#">
+        <img th:src="@{/img/logo.png}" height="50">
+    </a>
+    <div class="d-flex me-auto">
+        <ul class="navbar-nav flex-row gap-2 ">
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">首页</a></li>
+            <li class="nav-item"><a class="nav-link " th:href="@{/tv}">电视剧</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/anime}">动漫</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/film}">电影</a></li>
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin}">影视管理</a></li>
+        </ul>
+    </div>
+    <form class="d-inline-flex ms-auto" >
+        <input class="form-control me-3" type="text" style="height: 35px;width: 200px" placeholder="Search..."/>
+        <button class="btn btn-outline-secondary me-2" style="height: 35px;width: 60px">搜索</button>
+    </form>
+    <!-- 已登录：昵称+下拉退出菜单 -->
+    <div class="dropdown me-1" sec:authorize="isAuthenticated()">
+        <button class="btn dropdown-toggle d-flex align-items-center gap-1 w-auto"
+                style="justify-content:flex-start;"
+                type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <span style="width:40px;height:40px;border-radius:50%;background:#448aff;color:white;display:flex;align-items:center;justify-content:center;"></span>
+            <span style="color: white" th:text="${session.loginUser?.nickname}"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-end" style="width:90px;">
+            <li>
+                <form th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <button class="dropdown-item text-danger text-center" type="submit">退出登录</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+
+</nav>
+
+<div class="container mt-4">
+    <h4>关键词：<span th:text="${searchKey}"></span> 的搜索结果</h4>
+    <div class="row g-4 mt-3">
+        <div class="col-2" th:each="video:${videoList}">
+            <div class="card mt-3 mb-3 d-flex flex-column" style="height: 400px;">
+                <img th:src="${video.cover_img ?: '/img/default.jpg'}" style="height:220px;width:100%;object-fit:cover;">
+                <div class="card-body flex-grow-1 overflow-hidden">
+                    <h6 th:text="${video.title}"></h6>
+                    <p th:text="'简介:'+${video.info ?: '暂无简介'}"
+                       style="display: -webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:30px;">
+                    </p>
+                    <p th:text="'共'+${video.episodes}+'集'"></p>
+                </div>
+                <div class="p-2 d-flex justify-content-end">
+                    <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/bofang(id=${video.id})}'|">开始播放</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,27 @@
+ /* 表格固定布局，所有列宽度锁定，不会被文字撑变形 */
+ .table {
+     table-layout: fixed !important;
+     width: 100% !important;
+ }
+/* 分配每列固定宽度，简介列宽度固定 */
+.table th:nth-child(1)  { width: 5%; }   /* ID */
+.table th:nth-child(2)  { width: 11%; }  /* 封面 */
+.table th:nth-child(3)  { width: 12%; }  /* 剧名 */
+.table th:nth-child(4)  { width: 9%; }   /* 类型 */
+.table th:nth-child(5)  { width: 38%; }  /* 简介（固定宽度是3行省略的前提） */
+.table th:nth-child(6)  { width: 6%; }   /* 集数 */
+.table th:nth-child(7)  { width: 14%; }  /* 资源操作 */
+.table th:nth-child(8)  { width: 15%; }  /* 操作 */
+
+ /* 简介3行截断样式（核心修复） */
+ .info-3line {
+     display: -webkit-box !important;
+     -webkit-line-clamp: 3 !important;    /* 最多显示3行 */
+     -webkit-box-orient: vertical !important;
+     overflow: hidden !important;          /* 超出部分彻底隐藏 */
+     line-height: 1.5 !important;          /* 每行高度 */
+     max-height: calc(1.5em * 3) !important;/* 强制锁定3行总高度 */
+     vertical-align: top !important;       /* 文字顶部对齐，避免撑开单元格 */
+ }
+
+

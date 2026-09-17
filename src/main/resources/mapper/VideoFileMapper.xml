@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoba.aiqiyi.Mapper.VideoFileMapper">
+
+    <select id="selectByVidAndNum" resultType="com.aoba.aiqiyi.Entiy.VideoFile">
+        SELECT id, v_id, num, videopath, name
+        FROM video_file
+        WHERE v_id = #{v_id} AND num = #{num}
+    </select>
+
+    <select id="selectListByVid" resultType="com.aoba.aiqiyi.Entiy.VideoFile">
+        SELECT id, v_id, num, videopath, name
+        FROM video_file
+        WHERE v_id = #{v_id}
+        ORDER BY num ASC
+    </select>
+</mapper>

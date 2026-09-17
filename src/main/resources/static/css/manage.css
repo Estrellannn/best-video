@@ -1,0 +1,21 @@
+#fenlei1 div>a{
+    border: none
+}
+#fenlei2 div>a{
+    border: none
+}
+.container {
+    width: 1400px !important;
+    max-width: 1400px !important;
+}
+/*#tableleibie{*/
+/*    border-bottom: 1px solid red;*/
+/*}*/
+#leibie{
+    position: relative;
+}
+#new{
+    position: absolute;
+    top: 0;
+    right: 0;
+}

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoba.aiqiyi.Mapper.VideoEpMapper">
+
+    <select id="selectByVid" resultType="com.aoba.aiqiyi.Entiy.VideoFile">
+        SELECT id, v_id, num, videopath, name
+        FROM video_file
+        WHERE v_id = #{v_id}
+        ORDER BY num ASC
+    </select>
+
+    <insert id="insert" parameterType="com.aoba.aiqiyi.Entiy.VideoFile" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO video_file (v_id, num, videopath, name)
+        VALUES (#{v_id}, #{num}, #{videopath}, #{name})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM video_file WHERE id = #{id}
+    </delete>
+
+    <update id="update" parameterType="com.aoba.aiqiyi.Entiy.VideoFile">
+        UPDATE video_file
+        SET num = #{num}, videopath = #{videopath}
+        WHERE id = #{id}
+    </update>
+
+</mapper>

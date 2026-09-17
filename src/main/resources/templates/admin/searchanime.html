@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>动漫搜索结果</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/manage.css}">
+    <link rel="stylesheet" type="text/css" th:href="@{/css/admin.css}">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <th:block th:if="${_csrf != null}">
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </th:block>
+    <style>
+        .table {
+            table-layout: fixed !important;
+            width: 100% !important;
+        }
+        .table th:nth-child(1)  { width: 5% !important; }
+        .table th:nth-child(2)  { width: 11% !important; }
+        .table th:nth-child(3)  { width: 12% !important; }
+        .table th:nth-child(4)  { width: 9% !important; }
+        .table th:nth-child(5)  { width: 38% !important; }
+        .table th:nth-child(6)  { width: 6% !important; }
+        .table th:nth-child(7)  { width: 14% !important; }
+        .table th:nth-child(8)  { width: 15% !important; }
+        .info-3line {
+            display: -webkit-box !important;
+            -webkit-line-clamp: 3 !important;
+            -webkit-box-orient: vertical !important;
+            overflow: hidden !important;
+            line-height: 1.5 !important;
+            max-height: 4.5em !important;
+            vertical-align: top !important;
+            white-space: normal !important;
+        }
+    </style>
+</head>
+<body>
+<!--顶部导航栏 和原页面完全一致-->
+<nav class="navbar bg-dark navbar-dark ">
+    <a class="navbar-brand" href="#">
+        <img th:src="@{/img/logo.png}" height="50">
+    </a>
+    <div class="d-flex me-auto">
+        <ul class="navbar-nav flex-row gap-2 ">
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link" th:href="@{/admin}">影视管理</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/tv}">电视剧</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/anime}">动漫</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/admin/film}">电影</a></li>
+        </ul>
+    </div>
+    <!-- 搜索表单 -->
+    <form class="d-inline-flex ms-auto" th:action="@{/admin/tv/search}" method="get">
+        <input name="kw" class="form-control me-3" style="height: 35px;width: 200px"
+               placeholder="Search..." th:value="${kw}"/>
+        <button class="btn btn-outline-secondary me-4" style="height: 35px;width: 60px">搜索</button>
+    </form>
+</nav>
+
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <p class="h3">动漫搜索结果</p>
+            <div th:if="${kw != null}" class="text-secondary mt-1">
+                搜索关键词：<span th:text="${kw}" class="text-primary"></span>，共 <span th:text="${#lists.size(videoList)}"></span> 条数据
+            </div>
+        </div>
+        <a th:href="@{/admin/anime}" class="btn btn-secondary">返回全部列表</a>
+    </div>
+
+    <div th:if="${#lists.isEmpty(videoList)}" class="alert alert-warning">
+        未查询到匹配该关键词的电视剧，请更换关键词重新搜索
+    </div>
+
+    <table class="table table-bordered table-striped align-middle">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>封面图片</th>
+            <th>剧名</th>
+            <th>类型</th>
+            <th>简介</th>
+            <th>集数</th>
+            <th>资源操作</th>
+            <th>操作</th>
+        </tr>
+        </thead>
+        <h4>关键词：<span th:text="${searchKey}"></span> 的搜索结果</h4>
+        <tbody >
+        <tr th:each="video : ${videoList}" >
+            <td th:text="${video.id}"></td>
+            <td>
+                <img th:src="${video.cover_img}" style="width:80px;height:100px;object-fit:cover;">
+            </td>
+            <td th:text="${video.title}"></td>
+            <td>
+                <button class="btn btn-sm btn-outline-secondary" th:data-vid="${video.id}" onclick="openCatModal(this)">点击查看</button>
+            </td>
+            <td th:text="${video.info}" th:title="${video.info}"></td>
+            <td th:text="${video.episodes}+' 集'"></td>
+            <td>
+                <div class="d-grid gap-1">
+                    <button class="btn btn-sm btn-outline-secondary">更新剧集资源</button>
+                </div>
+            </td>
+            <td>
+                <div class="d-flex gap-1">
+                    <button class="btn-sm btn btn-light" th:data-id="${video.id}" th:data-title="${video.title}" th:data-info="${video.info}" th:data-episodes="${video.episodes}" th:data-cover_img="${video.cover_img ?: ''}" onclick="editanime(this)">编辑</button>
+                    <button class="btn-sm btn btn-dark" th:data-id="${video.id}" onclick="deleteanime(this)">删除</button>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+
+</div>
+
+<!-- 新增类别弹窗 -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">新增动漫</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form th:action="@{/admin/anime/add}" method="post" enctype="multipart/form-data">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="mb-3">
+                        <label>id</label>
+                        <input type="text" class="form-control mb-2" name="id" required>
+                        <label>动漫名称</label>
+                        <input type="text" class="form-control mb-2" name="title" required>
+                        <label>简介</label>
+                        <input type="text" class="form-control mb-2" name="info" required>
+                        <label>集数</label>
+                        <input type="text" class="form-control mb-2" name="episodes" required>
+                        <label>当前封面</label>
+                        <img id="previewCover" style="width: 100%; max-height:240px; object-fit:cover; margin-bottom:10px; display:none;">
+                        <label>更换封面（不选则保留原图）</label>
+                        <input type="file" class="form-control mb-2" name="coverImg" accept="image/*" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <!-- submit提交表单 -->
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑类别弹窗 -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑动漫</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <form th:action="@{/admin/anime/edit}" method="post" enctype="multipart/form-data">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="mb-3">
+                        <label>id</label>
+                        <input type="text" class="form-control mb-2" name="id" id="id" readonly>
+                        <label>动漫名称</label>
+                        <input type="text" class="form-control mb-2" name="title" id="title" required>
+                        <label>简介</label>
+                        <textarea class="form-control mb-2" name="info" id="info" rows="4" required></textarea>
+                        <label>集数</label>
+                        <input type="text" class="form-control mb-2" name="episodes" id="episodes" required>
+                        <label>当前封面</label>
+                        <img id="previewCovera" style="width: 100%; max-height:240px; object-fit:cover; margin-bottom:10px; display:none;">
+                        <label>更换封面（不选则保留原图）</label>
+                        <input type="file" class="form-control mb-2" name="coverImg" accept="image/*" >
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 分类弹窗 -->
+<div class="modal fade" id="catModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5>影视分类管理</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <p><strong>类型：</strong><span id="modalType"></span></p>
+                <p><strong>地区：</strong><span id="modalArea"></span></p>
+                <hr>
+                <p>编辑绑定分类：</p>
+                <div th:each="c : ${allCategory}">
+                    <label>
+                        <input type="checkbox" th:value="${c.id}" name="catCheck" th:text="${c.name}">
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                <button class="btn btn-primary" onclick="saveCat()">保存修改</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+
+    function editanime(btn) {
+        let id=btn.dataset.id;
+        let title=btn.dataset.title;
+        let info=btn.dataset.info;
+        let episodes=btn.dataset.episodes;
+        let coverImgUrl = btn.dataset.cover_img;
+
+        document.getElementById("id").value=id;
+        document.getElementById("title").value=title;
+        document.getElementById("info").innerText=info;
+        document.getElementById("episodes").value=episodes;
+
+        let previewImg = document.getElementById("previewCovera");
+        if(coverImgUrl && coverImgUrl !== ''){
+            previewImg.src = coverImgUrl;
+            previewImg.style.display = "block";
+        }else{
+            previewImg.style.display = "none";
+        }
+
+        let show=new bootstrap.Modal(document.getElementById("editModal"))
+        show.show();
+    }
+
+    function deleteanime(btn) {
+        let id=btn.dataset.id;
+        if (confirm("确定删除吗？")){
+            location.href = "/admin/anime/delete?id=" + id;
+        }
+    }
+
+    let currentVid = 0;
+
+    function openCatModal(btn){
+
+        const vid = btn.dataset.vid;
+        currentVid = vid;
+        fetch('/admin/getAVideoCat?vid='+vid)
+            .then(res=>res.json())
+            .then(data=>{
+                document.getElementById("modalType").innerText = data.typeStr || "-";
+                document.getElementById("modalArea").innerText = data.areaStr || "-";
+                const cidArr = data.catIds || [];
+                document.querySelectorAll("input[name='catCheck']").forEach(i=>i.checked=false);
+                cidArr.forEach(id=>{
+                    let input = document.querySelector(`input[value="${id}"]`);
+                    if(input) input.checked = true;
+                })
+                new bootstrap.Modal(document.getElementById("catModal")).show();
+            })
+    }
+
+    function saveCat(){
+        let checkList = [];
+        document.querySelectorAll("input[name='catCheck']").forEach(i=>{
+            if(i.checked){
+                checkList.push(i.value);
+            }
+        });
+
+        const csrf = document.querySelector('meta[name="_csrf"]').content;
+        fetch("/admin/updateAVideoCat",{
+            method:"POST",
+            headers:{
+                "Content-Type":"application/json",
+                "X-CSRF-Token": csrf
+            },
+            body:JSON.stringify({vid:currentVid,cidList:checkList})
+        }).then(res=>{
+            if(!res.ok) throw new Error("服务异常");
+            return res.text();
+        }).then(()=>{
+            alert("保存成功");
+            location.reload();
+        }).catch(err=>{
+            console.error(err);
+            alert("保存分类失败，请重试");
+        })
+    }
+
+</script>
+</html>

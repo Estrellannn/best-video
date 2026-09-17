@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>best</title>
+    <link rel="stylesheet" type="text/css" th:href="@{/css/manage.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.2/umd/popper.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.1.3/js/bootstrap.min.js"></script>
+    <th:block th:if="${_csrf != null}">
+        <meta name="_csrf" th:content="${_csrf.token}"/>
+        <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    </th:block>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+<!--导航-->
+<nav class="navbar bg-dark navbar-dark " >
+    <a class="navbar-brand" href="#">
+        <img th:src="@{/img/logo.png}" height="50">
+    </a>
+    <div class="d-flex me-auto">
+        <ul class="navbar-nav flex-row gap-2 ">
+            <li class="nav-item"><a class="nav-link" th:href="@{/}">首页</a></li>
+            <li class="nav-item"><a class="nav-link " th:href="@{/tv}">电视剧</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/anime}">动漫</a></li>
+            <li class="nav-item"><a class="nav-link" th:href="@{/film}">电影</a></li>
+            <li class="nav-item" sec:authorize="hasRole('ADMIN')"><a class="nav-link active" th:href="@{/admin}">影视管理</a></li>
+        </ul>
+    </div>
+</nav>
+<div class="container">
+    <div id="leibie" class="mt-4">
+        <h3>类别</h3>
+        <button id="new" class="btn-sm btn btn-success" onclick="addcategory()">新增类别</button>
+        <div class="row">
+            <div class="col-auto" th:each="item:${leibie}">
+                <div class="card mb-2" >
+                    <div class="card-body">
+                        <p th:text="${item.name}"></p>
+                    </div>
+                    <div class="card-end m-2">
+                        <button class="btn-sm btn btn-primary" th:data-id="${item.id}"
+                                th:data-name="${item.name}"
+                                onclick="openEditModal(this)">编辑</button>
+                        <button class="btn-sm btn btn-secondary" th:data-id="${item.id}" onclick="deletecategory(this)">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container">
+    <div id="tv" class="mt-2">
+        <div class="row g-4">
+            <div class="col-2" >
+                <div class="card mt-3 mb-3 d-flex flex-column">
+                    <img src="/img/永远的第1名.jpg"  style="height: 220px; object-fit: cover;"/>
+                    <div class="card-body">
+                        <h6>电视剧</h6>
+                        <p></p>
+                    </div>
+                    <div class="p-2 d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/admin/tv}'|">进入管理</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2" >
+                <div class="card mt-3 mb-3 d-flex flex-column">
+                    <img src="/img/进击的巨人.jpg"  style="height: 220px; object-fit: cover;"/>
+                    <div class="card-body">
+                        <h6>动漫</h6>
+                        <p></p>
+                    </div>
+                    <div class="p-2 d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/admin/anime}'|">进入管理</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-2" >
+                <div class="card mt-3 mb-3 d-flex flex-column">
+                    <img src="/img/逃学威龙.jpg"  style="height: 220px; object-fit: cover;"/>
+                    <div class="card-body">
+                        <h6>电影</h6>
+                        <p></p>
+                    </div>
+                    <div class="p-2 d-flex justify-content-end">
+                        <button class="btn btn-sm btn-dark ml-auto d-block" th:onclick="|location.href='@{/admin/film}'|">进入管理</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 编辑分类弹窗 -->
+<div class="modal fade" id="editModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">编辑类别</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editForm" th:action="@{/category}" method="post">
+                    <input type="hidden" name="id" id="editId">
+                    <div class="mb-3">
+                        <label>类别名称</label>
+                        <input type="text" class="form-control" name="name" id="editName" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">保存修改</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 新增类别弹窗 -->
+<div class="modal fade" id="addModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">新增类别</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+
+                <form th:action="@{/category/add}" method="post">
+
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+                    <div class="mb-3">
+                        <label>类别名称</label>
+                        <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="submit" class="btn btn-primary">保存</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+<script>
+
+    function openEditModal(btn){
+        let id = btn.dataset.id;
+        let name = btn.dataset.name;
+
+        document.getElementById('editId').value = id;
+        document.getElementById('editName').value = name;
+
+        let myModal = new bootstrap.Modal(document.getElementById('editModal'));
+        myModal.show();
+    }
+
+    function deletecategory(btn){
+        let id = btn.dataset.id;
+
+        const csrfMeta = document.querySelector('meta[name="_csrf"]');
+        const headerMeta = document.querySelector('meta[name="_csrf_header"]');
+        if (!csrfMeta || !headerMeta) {
+            alert("安全令牌加载失败，请刷新页面");
+            return;
+        }
+        const csrfToken = csrfMeta.content;
+        const csrfHeader = headerMeta.content;
+
+        if(!confirm("确定要删除该类别吗？删除后不可恢复！")){
+            return;
+        }
+        axios.post(
+            "/category/ajaxDelete",
+            {},
+            {
+                params: { id: id },
+                headers: {
+                    [csrfHeader]: csrfToken
+                }
+            }
+        ).then(res => {
+
+            if(res.data.code === 200){
+
+                btn.closest(".col-auto").remove();
+                alert(res.data.msg);
+            }else{
+                alert(res.data.msg);
+            }
+        }).catch(err => {
+            alert("请求出错，请检查网络或后台日志");
+            console.log(err);
+        })
+    }
+
+    function addcategory() {
+        let myadd=new bootstrap.Modal(document.getElementById("addModal"));
+        myadd.show();
+    }
+
+</script>
+</html>

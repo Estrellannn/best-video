@@ -1,0 +1,20 @@
+.ep-btn{
+    display:inline-block;
+    padding:8px 18px;
+    border:1px solid #6c757d;
+    border-radius:4px;
+    text-decoration:none;
+    cursor:pointer;
+    font-size:14px;
+    margin:6px;
+    color:#6c757d;
+    background:transparent;
+}
+.ep-btn.active{
+    background:#6c757d;
+    color:#ffffff;
+}
+.ep-btn:hover{
+    background:#868e96;
+    color:#fff;
+}

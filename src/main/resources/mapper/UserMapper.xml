@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoba.aiqiyi.Mapper.UserMapper">
+
+    <resultMap id="UserRoleResultMap" type="com.aoba.aiqiyi.Entiy.Users">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="nickname" property="nickname"/>
+        <!-- 一对多封装角色集合 -->
+        <collection property="roleList" ofType="com.aoba.aiqiyi.Entiy.Role">
+            <id column="role_id" property="id"/>
+            <result column="role_name" property="role_name"/>
+        </collection>
+    </resultMap>
+
+    <select id="selectUserAndRoleByUsername" resultMap="UserRoleResultMap">
+        SELECT u.id,
+               u.username,
+               u.password,
+               u.nickname,
+               r.id role_id,
+               r.role_name
+        FROM users u
+                 LEFT JOIN user_role ur ON u.id = ur.user_id
+                 LEFT JOIN role r ON ur.role_id = r.id
+        WHERE u.username = #{username}
+    </select>
+
+    <delete id="deleteVideoCat">
+        DELETE FROM video_category WHERE v_id = #{vid}
+    </delete>
+    <insert id="batchInsertCat">
+        INSERT INTO video_category(v_id,c_id) VALUES
+        <foreach collection="cidList" item="cid" separator=",">
+            (#{vid},#{cid})
+        </foreach>
+    </insert>
+
+    <select id="selectByUsername" resultType="com.aoba.aiqiyi.Entiy.Users">
+        select * from users where username = #{username}
+    </select>
+
+    <insert id="insertUser" useGeneratedKeys="true" keyProperty="id">
+        insert into users(username,password,nickname)
+        values(#{username},#{password},#{nickname})
+    </insert>
+
+</mapper>

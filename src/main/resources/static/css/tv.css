@@ -1,0 +1,31 @@
+#fenlei1 div>a{
+    border: none
+}
+#fenlei2 div>a{
+    border: none
+}
+.container {
+    width: 1400px !important;
+    max-width: 1400px !important;
+}
+.tag-btn {
+    border: none;
+    outline: none;
+    box-shadow: none; /* 彻底干掉focus蓝色阴影 */
+    color:#212529;    /* 未选中：黑色文字，和第二排地区按钮文字颜色对齐 */
+    background: transparent;
+}
+#buttonA {
+    border: none;
+}
+#buttonB {
+    border: none;
+}
+#buttonC {
+    border: none;
+}
+#buttonD {
+    border: none;
+}
+
+

@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.aoba.aiqiyi.Mapper.MainMapper">
+    <select id="selectTvVideo" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT DISTINCT v.*
+        FROM video v
+                 JOIN video_category vc ON v.id = vc.v_id
+                 JOIN category c ON vc.c_id = c.id
+        WHERE c.id = 14
+        ORDER BY v.id DESC
+    </select>
+    <select id="selectFilmVideo" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT DISTINCT v.*
+        FROM video v
+                 JOIN video_category vc ON v.id = vc.v_id
+                 JOIN category c ON vc.c_id = c.id
+        WHERE c.id = 15
+        ORDER BY v.id DESC
+    </select>
+    <select id="selectAnimeVideo" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT DISTINCT v.*
+        FROM video v
+                 JOIN video_category vc ON v.id = vc.v_id
+                 JOIN category c ON vc.c_id = c.id
+        WHERE c.id = 16
+        ORDER BY v.id DESC
+    </select>
+
+    <select id="searchVideo" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT DISTINCT v.*
+        FROM video v
+        INNER JOIN video_category vc ON v.id = vc.v_id
+        WHERE 1=1
+        <!-- 只匹配title标题 -->
+        <if test="kw != null and kw != ''">
+            AND v.title LIKE CONCAT('%',#{kw},'%')
+        </if>
+        <!-- 按分类筛选 -->
+        <if test="cid != 0">
+            AND vc.c_id = #{cid}
+        </if>
+        ORDER BY v.id DESC
+    </select>
+
+    <select id="listVideoByCidList" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT DISTINCT v.* FROM video v
+        -- 条件1：必须是电视剧主分类 c_id=14
+        WHERE EXISTS (
+        SELECT 1 FROM video_category vc_main
+        WHERE vc_main.v_id = v.id AND vc_main.c_id = #{mainCid}
+        )
+        -- 条件2：列表里每一个cid，视频都必须拥有（交集，全部满足）
+        <foreach collection="cidList" item="cid">
+            AND EXISTS (
+            SELECT 1 FROM video_category vc
+            WHERE vc.v_id = v.id AND vc.c_id = #{cid}
+            )
+        </foreach>
+    </select>
+
+    <!-- 无筛选条件，查当前大类全部影视（电视剧cid=11、电影cid=13） -->
+    <select id="listVideoByMainCid" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT DISTINCT v.*
+        FROM video v
+                 INNER JOIN video_category vc ON v.id = vc.v_id
+        WHERE vc.c_id = #{mainCid}
+        ORDER BY v.id DESC
+    </select>
+
+    <!-- 查询后台电视剧列表，带出全部关联分类 -->
+    <select id="listTvAdminWithCategory" resultType="com.aoba.aiqiyi.Entiy.Video">
+        SELECT
+            v.*,
+            c.id AS cat_id,
+            c.name AS cat_name
+        FROM video v
+                 -- 关联中间表拿分类id
+                 LEFT JOIN video_category vc ON v.id = vc.v_id
+            -- 关联分类表拿分类名称
+                 LEFT JOIN category c ON vc.c_id = c.id
+        -- 只筛选电视剧：必须绑定大类id=11
+        WHERE EXISTS (
+            SELECT 1 FROM video_category vc2
+            WHERE vc2.v_id = v.id AND vc2.c_id = 11
+        )
+        ORDER BY v.id DESC
+    </select>
+
+    <select id="getCatByVid" resultType="com.aoba.aiqiyi.Entiy.Category">
+        SELECT c.id,c.name FROM video_category vc
+                                    LEFT JOIN category c ON vc.c_id = c.id
+        WHERE vc.v_id = #{vid}
+    </select>
+</mapper>

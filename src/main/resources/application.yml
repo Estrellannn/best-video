@@ -1,0 +1,46 @@
+server:
+  port: 8880
+
+redis:
+  enable: false # true开启Redis；false关闭。
+
+spring:
+  profiles:
+    active: dev
+  web:
+    resources:
+      static-locations:
+        - file:D:/video_upload/
+        - classpath:/static/
+
+  datasource:
+    url: jdbc:mysql://TiDB地址:4000/best?xxx
+    username: 真实账号
+    password: 真实密码
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      max-request-size: 500MB
+  data:
+    redis:
+      host: 127.0.0.1
+      port: 6379
+      database: 0
+      lettuce:
+        pool:
+          max-active: 8
+          max-idle: 8
+          min-idle: 2
+
+  rabbitmq:
+    host: 127.0.0.1
+    port: 5672
+    virtual-host: /
+    publisher-confirm-type: correlated
+
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.aoba.aiqiyi.pojo
+
+
