@@ -24,10 +24,10 @@
 2. 在本地MySQL新建`best`数据库，使用Navicat右键`best`数据库 → 运行SQL文件，选中本项目内的`best-db.sql`导入，导入完成刷新，确认所有表和数据存在。
 3. 修改`application.yml`里的数据库连接，指向本地的`best`库，填写你的 MySQL 账号密码。
 
-### Redis 可选开关
-项目自定义Redis开关：`redis.enable` 在 `application.yml`
-- `redis.enable: true`：开启Redis缓存，本地需要安装并启动Redis（默认端口6379，db0无密码），用于登录信息缓存，性能更好。
-- `redis.enable: false`：关闭Redis，**不需要安装Redis**，核心业务功能完全正常。
+### Redis 依赖
+项目依赖Redis，必须安装并启动Redis才能正常启动项目。
+- 默认配置：端口6379，db0，无密码，用于登录信息缓存。
+- 启动项目前，请先运行 redis-server.exe 启动Redis服务。
 
 ## 静态资源目录配置
 项目配置了本地文件访问路径：`file:D:/video_upload/`
