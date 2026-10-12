@@ -49,16 +49,17 @@
 普通用户：kojaku 密码：012
 普通用户：ken 密码：345
 
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 131955" src="https://github.com/user-attachments/assets/8cc6781e-dfef-4fa4-b5b2-bf33ac73ac2b" />
+<img width="1920" height="4334" alt="首页 (2)" src="https://github.com/user-attachments/assets/c55cba2e-c6e5-490d-9f7a-8b6ee2f030a3" />
 <img width="1919" height="1079" alt="屏幕截图 2026-09-17 132008" src="https://github.com/user-attachments/assets/00fbfa6b-716f-40fd-8dfe-4865c8d6e069" />
 <img width="1919" height="1079" alt="屏幕截图 2026-09-17 132014" src="https://github.com/user-attachments/assets/049213da-0b2d-4db1-9683-d91f5bd032b2" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132045" src="https://github.com/user-attachments/assets/c0d3ab85-2b11-4b92-ba39-46faafb1aa69" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132058" src="https://github.com/user-attachments/assets/a18cb19b-745c-4ec5-814b-baa13d8d148c" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132106" src="https://github.com/user-attachments/assets/ff6e31af-8b91-4c4c-a063-175f49d4b2a3" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132254" src="https://github.com/user-attachments/assets/a8c3cef7-fc1f-4b70-8414-fde6a5f28a22" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132408" src="https://github.com/user-attachments/assets/9db771f3-2db9-46da-8f8c-05f9d40142fe" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132428" src="https://github.com/user-attachments/assets/05f0a7eb-ade3-40eb-be29-01b3673a899c" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132134" src="https://github.com/user-attachments/assets/2948a6d2-8f34-4d20-84db-506bd74f9ed1" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132150" src="https://github.com/user-attachments/assets/480ed7d7-2b26-4338-a6b7-85d6f212e966" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132212" src="https://github.com/user-attachments/assets/b244d2bf-1215-4884-ab0c-5297f88c516d" />
-<img width="1919" height="1079" alt="屏幕截图 2026-09-17 132228" src="https://github.com/user-attachments/assets/71d5f401-c69a-4bc1-84b1-22334f48108f" />
+<img width="1920" height="1923" alt="电视" src="https://github.com/user-attachments/assets/90d7721e-f82d-45f8-a4b1-e8183536fdc8" />
+<img width="1920" height="1923" alt="动漫" src="https://github.com/user-attachments/assets/b97fc165-75a9-4e06-bb7c-11e7434db030" />
+<img width="1920" height="1923" alt="电影" src="https://github.com/user-attachments/assets/c7a5c5de-8a73-44c9-bad9-567e9f10f73b" />
+<img width="1920" height="2001" alt="搜索" src="https://github.com/user-attachments/assets/b78a1b7a-26ee-40dd-b83c-0a8f51db608f" />
+<img width="1920" height="1155" alt="选集" src="https://github.com/user-attachments/assets/b10299ce-2738-4b5b-be75-075b0d981fd5" />
+<img width="1920" height="1238" alt="播放" src="https://github.com/user-attachments/assets/3cab13ca-2d9f-417b-b8ce-3edd354d844f" />
+<img width="1920" height="1237" alt="管理" src="https://github.com/user-attachments/assets/82c95977-e303-4a72-9554-b3cb31fe2ed8" />
+<img width="1920" height="2182" alt="管理-电视" src="https://github.com/user-attachments/assets/1e653d0a-29ee-48f3-8560-de6c2c62b427" />
+<img width="1920" height="2122" alt="管理-动漫" src="https://github.com/user-attachments/assets/c2eb363b-fb90-4ee0-8a3b-1c73447f44a1" />
+<img width="1920" height="2032" alt="管理-电影" src="https://github.com/user-attachments/assets/1f58f418-ddca-4598-9522-756b471a9499" />
+
